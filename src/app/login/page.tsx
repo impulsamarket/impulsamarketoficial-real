@@ -1,29 +1,37 @@
-"use client";
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { useForm } from "react-hook-form";
+'use client'
+
+import { useState } from 'react'
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm();
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  const onSubmit = async (data: any) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      alert("Login exitoso");
-    } catch (err) {
-      setError("Correo o contraseña inválidos");
+      // lógica de autenticación
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      if (res.ok) {
+        console.log('Login exitoso')
+        // redirigir o actualizar estado
+      } else {
+        console.error('Credenciales incorrectas')
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión')
     }
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4 max-w-sm mx-auto">
-      <h1 className="text-xl font-bold mb-4">Login</h1>
-      <input {...register("email")} placeholder="Email" className="mb-2 w-full border p-2" />
-      <input {...register("password")} type="password" placeholder="Contraseña" className="mb-2 w-full border p-2" />
-      {error && <p className="text-red-500">{error}</p>}
-      <button className="bg-black text-white px-4 py-2 w-full">Ingresar</button>
+    <form onSubmit={handleLogin}>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Correo" required />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" required />
+      <button type="submit">Iniciar sesión</button>
     </form>
-  );
+  )
 }
