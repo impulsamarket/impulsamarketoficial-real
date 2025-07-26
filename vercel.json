@@ -1,12 +1,12 @@
 {
-  "build": {
-    "env": {
-      "VERCEL_FORCE_BUILD": "1"
-    }
-  },
+  "version": 2,
   "builds": [
-    { "src": "package.json", "use": "@vercel/next" }
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
   ]
 }
+
 
 
